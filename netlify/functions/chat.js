@@ -20,13 +20,13 @@ export const handler = async (event) => {
     const data = await response.json();
 
     if (!response.ok) {
-      console.error("Gemini Error:", data);
+      // ← this now sends the REAL Gemini error to the browser
+      console.error("Gemini Error:", JSON.stringify(data));
       return {
         statusCode: 500,
-        body: JSON.stringify({ error: "Gemini API rejected the request." })
+        body: JSON.stringify({ error: data?.error?.message || "Unknown Gemini error", details: data })
       };
     }
-
     return {
       statusCode: 200,
       body: JSON.stringify({ reply: data.candidates[0].content.parts[0].text })
