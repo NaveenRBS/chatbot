@@ -1,7 +1,7 @@
 import { useState } from 'react';
-import { Chatbot } from 'supersimpledev';
-import { ChatData } from './componets/chatData';
-import { ChatInput } from './componets/ChatInput';
+// import { Chatbot } from 'supersimpledev';
+import { ChatData } from './components/chatData';
+import { ChatInput } from './components/ChatInput';
 
 import './App.css'
 
