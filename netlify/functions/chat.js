@@ -4,32 +4,34 @@ export const handler = async (event) => {
   }
 
   const { message } = JSON.parse(event.body);
-  const API_KEY = process.env.GEMINI_API_KEY;
+  const API_KEY = process.env.GROQ_API_KEY;
 
   try {
-    const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${API_KEY}`, {
+    const response = await fetch("https://api.groq.com/openai/v1/chat/completions", {
       method: "POST",
       headers: {
-        "Content-Type": "application/json"
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${API_KEY}`
       },
       body: JSON.stringify({
-        contents: [{ parts: [{ text: message }] }]
+        model: "llama-3.3-70b-versatile",
+        messages: [{ role: "user", content: message }]
       })
     });
 
     const data = await response.json();
 
     if (!response.ok) {
-      // ← this now sends the REAL Gemini error to the browser
-      console.error("Gemini Error:", JSON.stringify(data));
+      console.error("Groq Error:", JSON.stringify(data));
       return {
         statusCode: 500,
-        body: JSON.stringify({ error: data?.error?.message || "Unknown Gemini error", details: data })
+        body: JSON.stringify({ error: data?.error?.message || "Groq error" })
       };
     }
+
     return {
       statusCode: 200,
-      body: JSON.stringify({ reply: data.candidates[0].content.parts[0].text })
+      body: JSON.stringify({ reply: data.choices[0].message.content })
     };
 
   } catch (error) {
